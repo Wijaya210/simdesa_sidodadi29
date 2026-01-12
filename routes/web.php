@@ -13,6 +13,7 @@ use App\Http\Controllers\admins\SuratPengajuanController as AdminSuratPengajuanC
 // Beranda
 // ========================
 Route::get('/', [BerandaController::class, 'index'])->name('beranda');
+Route::get('/statistik', [\App\Http\Controllers\StatistikController::class, 'index'])->name('statistik.index');
 
 // ========================
 // LOGIN & LOGOUT ADMIN
@@ -38,9 +39,11 @@ Route::post('/login', [LoginController::class, 'process'])->name('login.process'
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Dashboard (hanya user login)
-Route::get('/warga/dashboard', [UsersController::class, 'dashboard'])
-    ->name('users.dashboard')
-    ->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::get('/warga/dashboard', [UsersController::class, 'dashboard'])->name('users.dashboard');
+    Route::get('/warga/profil', [UsersController::class, 'profile'])->name('users.profile');
+    Route::post('/warga/profil/password', [UsersController::class, 'updatePassword'])->name('users.profile.password');
+});
 
 // ========================
 // SURAT PENGAJUAN
@@ -84,5 +87,22 @@ Route::middleware('auth')->group(function () {
         // PROGRAM BANTUAN - ADMIN
         // ========================
         Route::resource('program-bantuan', \App\Http\Controllers\Admins\ProgramBantuanController::class);
+
+        // ========================
+        // BIODATA WARGA - ADMIN
+        // ========================
+        Route::resource('biodata-warga', \App\Http\Controllers\Admins\BiodataWargaController::class);
+
+        // ========================
+        // STATISTIK - ADMIN
+        // ========================
+        Route::get('/statistik', [\App\Http\Controllers\Admins\StatistikController::class, 'index'])->name('statistik.index');
+        Route::post('/statistik/update', [\App\Http\Controllers\Admins\StatistikController::class, 'update'])->name('statistik.update');
+        Route::delete('/statistik/pekerjaan/{id}', [\App\Http\Controllers\Admins\StatistikController::class, 'destroyPekerjaan'])->name('statistik.pekerjaan.delete');
+
+        // ========================
+        // KEUANGAN DESA - ADMIN
+        // ========================
+        Route::resource('keuangan', \App\Http\Controllers\Admins\KeuanganDesaController::class);
     });
 });

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,66 +8,78 @@
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            line-height: 1.6;
-            margin: 40px;
+            font-size: 11pt;
+            line-height: 1.4;
+            margin: 20px 40px;
         }
+
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #000;
-            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
         }
+
         .header h2 {
-            margin: 5px 0;
-            font-size: 16pt;
+            margin: 2px 0;
+            font-size: 14pt;
             text-transform: uppercase;
         }
+
         .header p {
-            margin: 3px 0;
-            font-size: 10pt;
+            margin: 1px 0;
+            font-size: 9pt;
         }
+
         .title {
             text-align: center;
-            margin: 30px 0 20px 0;
+            margin: 15px 0 10px 0;
             text-decoration: underline;
             font-weight: bold;
-            font-size: 14pt;
+            font-size: 12pt;
         }
+
         .content {
             text-align: justify;
-            margin: 20px 0;
+            margin: 10px 0;
         }
+
         .data-table {
-            margin: 20px 0 20px 40px;
+            margin: 10px 0 10px 40px;
         }
+
         .data-table tr td:first-child {
-            width: 200px;
+            width: 180px;
             vertical-align: top;
         }
+
         .data-table tr td:nth-child(2) {
             width: 10px;
             vertical-align: top;
         }
+
         .signature {
-            margin-top: 50px;
+            margin-top: 30px;
             float: right;
             text-align: center;
-            width: 250px;
+            width: 200px;
         }
+
         .signature .name {
-            margin-top: 70px;
+            margin-top: 40px;
             font-weight: bold;
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h2>Pemerintah Desa Sidodadi</h2>
         <h2>Kecamatan Candi</h2>
         <h2>Kabupaten Sidoarjo</h2>
-        <p>Alamat: Jalan Raya Sidodadi No.1983, Sidodadi, Candi, Sudio, Sidodadi, Kec. Sidoarjo, Kabupaten Sidoarjo, Jawa Timur 61271</p>
+        <p>Alamat: Jalan Raya Sidodadi No.1983, Sidodadi, Candi, Sudio, Sidodadi, Kec. Sidoarjo, Kabupaten Sidoarjo,
+            Jawa Timur 61271</p>
     </div>
 
     <div class="title">
@@ -75,8 +88,8 @@
     </div>
 
     <div class="content">
-        <p>Yang bertanda tangan di bawah ini Kepala Desa Sidodadi, Kecamatan Candi, 
-        Kabupaten Sidoarjo, dengan ini menerangkan bahwa:</p>
+        <p>Yang bertanda tangan di bawah ini Kepala Desa Sidodadi, Kecamatan Candi,
+            Kabupaten Sidoarjo, dengan ini menerangkan bahwa:</p>
 
         <table class="data-table">
             <tr>
@@ -92,7 +105,7 @@
         </table>
 
         <p style="margin-top: 30px;">
-            Adalah benar penduduk Desa Sidodadi dan surat ini dibuat sebagai pengantar untuk keperluan 
+            Adalah benar penduduk Desa Sidodadi dan surat ini dibuat sebagai pengantar untuk keperluan
             <strong>pernikahan</strong> dengan calon pasangan:
         </p>
 
@@ -117,9 +130,15 @@
     <div class="signature">
         <p>Sidodadi, {{ now()->format('d F Y') }}</p>
         <p>Kepala Desa Sidodadi</p>
+        @if($qrCode)
+            <div style="margin: 10px 0;">
+                <img src="data:image/svg+xml;base64,{{ $qrCode }}" width="80" alt="QR Code">
+            </div>
+        @endif
         <div class="name">
             [Nama Kepala Desa]
         </div>
     </div>
 </body>
+
 </html>

@@ -40,19 +40,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-<<<<<<< HEAD
 
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
         ],
     ],
-
-
-=======
-    ],
-
->>>>>>> 7b5d7dfada9c7047d156582c2bca42c1d0be8c62
     /*
     |--------------------------------------------------------------------------
     | User Providers
@@ -73,7 +66,6 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-<<<<<<< HEAD
             'model' => App\Models\User::class,
         ],
 
@@ -82,19 +74,6 @@ return [
             'model' => App\Models\Admins::class,
         ],
     ],
-
-
-=======
-            'model' => env('AUTH_MODEL', App\Models\User::class),
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
-    ],
-
->>>>>>> 7b5d7dfada9c7047d156582c2bca42c1d0be8c62
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords

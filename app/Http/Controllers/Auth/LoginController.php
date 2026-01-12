@@ -16,10 +16,18 @@ class LoginController extends Controller
     public function process(Request $request)
     {
         // Validasi input
-        $credentials = $request->validate([
-            'email' => 'required|email',
+        $request->validate([
+            'login' => 'required', // Bisa Email (Admin) atau NIK (Warga)
             'password' => 'required',
         ]);
+
+        // Cek apakah input adalah email atau NIK
+        $loginType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nik';
+
+        $credentials = [
+            $loginType => $request->login,
+            'password' => $request->password
+        ];
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -33,7 +41,7 @@ class LoginController extends Controller
         }
 
         // Jika gagal
-        return back()->with('error', 'Email atau password salah!');
+        return back()->with('error', 'Email/NIK atau password salah!');
     }
 
     public function logout(Request $request)

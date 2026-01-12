@@ -15,16 +15,26 @@ class SuratPengajuanController extends Controller
     {
         $surat = SuratPengajuan::with('user')->findOrFail($id);
 
-        // Decode detail jika berupa JSON (meskipun sudah dicast di model, jaga-jaga)
-        $detail = is_array($surat->detail)
-            ? $surat->detail
-            : json_decode($surat->detail, true) ?? [];
+        // Decode detail jika berupa JSON
+        $detail = $surat->detail ?? [];
+
+        // Generate QR Code as SVG Base64 for PDF (Avoids PHP GD dependency)
+        $qrUrl = route('surat-pengajuan.detail', $surat->id);
+        $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($qrUrl) . "&format=svg";
+
+        try {
+            $qrCodeData = file_get_contents($qrApiUrl);
+            $qrCode = base64_encode($qrCodeData);
+        } catch (\Exception $e) {
+            $qrCode = null;
+        }
 
         // Load view PDF sesuai jenis surat
         $pdf = Pdf::loadView('pdf.surat.' . $surat->jenis_surat, [
             'pengajuan' => $surat,
             'detail' => $detail,
-            'user' => $surat->user
+            'user' => $surat->user,
+            'qrCode' => $qrCode
         ]);
 
         return $pdf->stream('Preview_' . $surat->jenis_surat . '.pdf');

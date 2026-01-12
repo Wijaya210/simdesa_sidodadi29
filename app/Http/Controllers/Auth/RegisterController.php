@@ -21,18 +21,32 @@ class RegisterController extends Controller
         // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
+            'nik' => 'required|numeric',
             'email' => 'required|email|unique:users,email',
-            'nik' => 'required|numeric|unique:users,nik',
             'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
-        // Buat user baru
-        $user = User::create([
-            'name' => $request->name,
+        // Cari data warga yang sudah didaftarkan oleh admin berdasarkan NIK
+        $user = User::where('nik', $request->nik)
+            ->where('is_admin_added', true)
+            ->first();
+
+        // Jika NIK tidak ditemukan di data admin
+        if (!$user) {
+            return back()->withInput()->withErrors(['nik' => 'NIK Anda tidak terdaftar di data warga desa. Silakan hubungi admin untuk pendaftaran data warga terlebih dahulu.']);
+        }
+
+        // Jika warga sudah pernah registrasi sebelumnya
+        if ($user->is_registered) {
+            return back()->withInput()->withErrors(['nik' => 'Akun dengan NIK ini sudah terdaftar. Silakan login atau gunakan fitur lupa password.']);
+        }
+
+        // Update data warga yang ada (aktivasi akun)
+        $user->update([
+            'name' => $request->name, // Update nama jika ada perubahan dari KTP
             'email' => $request->email,
-            'nik' => $request->nik,
             'password' => Hash::make($request->password),
-            'role' => 'user',
+            'is_registered' => true,
         ]);
 
         // Login otomatis

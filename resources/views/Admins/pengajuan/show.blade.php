@@ -33,10 +33,7 @@
                                 <td class="text-muted ps-0">NIK</td>
                                 <td class="fw-bold">{{ $surat->user->nik ?? '-' }}</td>
                             </tr>
-                            <tr>
-                                <td class="text-muted ps-0">Email</td>
-                                <td class="fw-bold">{{ $surat->user->email ?? '-' }}</td>
-                            </tr>
+
                         </table>
                     </div>
                 </div>

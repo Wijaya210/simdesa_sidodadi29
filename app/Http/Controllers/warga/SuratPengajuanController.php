@@ -39,18 +39,18 @@ class SuratPengajuanController extends Controller
         ]);
 
         $detail = $request->except(['_token', 'jenis_surat', 'file_attachments']);
-        
+
         // Handle File Uploads
         if ($request->hasFile('file_attachments')) {
             $files = [];
             foreach ($request->file('file_attachments') as $file) {
                 // Simpan file ke storage/app/public/surat_uploads/user_id/timestamp
-                $path = $file->storeAs(
-                    'public/surat_uploads/' . auth()->id() . '/' . time(),
-                    $file->getClientOriginalName()
-                );
-                // Simpan path relatif untuk diakses via storage link
-                $files[] = str_replace('public/', 'storage/', $path);
+                $filename = $file->getClientOriginalName();
+                $storagePath = 'surat_uploads/' . auth()->id() . '/' . time();
+                $path = $file->storeAs($storagePath, $filename, 'public');
+
+                // Simpan path relatif untuk diakses via asset() -> storage/surat_uploads/...
+                $files[] = 'storage/' . $path;
             }
             $detail['files'] = $files;
         }
@@ -59,6 +59,7 @@ class SuratPengajuanController extends Controller
             'user_id' => auth()->user()->id,
             'jenis_surat' => $request->jenis_surat,
             'status' => 'pending',
+            'tanggal_pengajuan' => now(),
             'catatan_admin' => null,
             'detail' => $detail,
         ];
@@ -77,16 +78,20 @@ class SuratPengajuanController extends Controller
         $pengajuan = SuratPengajuan::where('user_id', auth()->id())
             ->findOrFail($id);
 
-        /**
-         * Pastikan $detail berupa ARRAY
-         * Jika DB menyimpan JSON string → otomatis decode
-         * Jika null → jadikan array kosong
-         */
-        $detail = is_array($pengajuan->detail)
-            ? $pengajuan->detail
-            : json_decode($pengajuan->detail, true) ?? [];
+        $detail = $pengajuan->detail ?? [];
 
-        return view('users.pengajuan.detail', compact('pengajuan', 'detail'));
+        // Mapping Label untuk Detail sesuai Jenis Surat
+        $fieldMap = [
+            'nikah' => ['nama_pasangan' => 'Nama Calon Pasangan', 'alamat_pasangan' => 'Alamat Calon Pasangan'],
+            'pindah' => ['alamat_tujuan' => 'Alamat Tujuan', 'provinsi_tujuan' => 'Provinsi Tujuan'],
+            'tanah' => ['lokasi_tanah' => 'Lokasi Tanah', 'luas_tanah' => 'Luas Tanah (m²)'],
+            'usaha' => ['nama_usaha' => 'Nama Usaha', 'jenis_usaha' => 'Jenis Usaha', 'alamat_usaha' => 'Alamat Usaha'],
+            'ahli_waris' => ['hubungan_pewaris' => 'Hubungan Pewaris', 'tgl_kematian' => 'Tanggal Kematian'],
+        ];
+
+        $fields = $fieldMap[$pengajuan->jenis_surat] ?? [];
+
+        return view('users.pengajuan.detail', compact('pengajuan', 'detail', 'fields'));
     }
 
     // ======================
@@ -99,20 +104,28 @@ class SuratPengajuanController extends Controller
             ->findOrFail($id);
 
         // Validasi: hanya surat yang sudah disetujui yang bisa didownload
-        if (!in_array($pengajuan->status, ['disetujui', 'approved'])) {
-            return redirect()->back()->with('error', 'Hanya surat yang sudah disetujui yang dapat diunduh.');
+        if ($pengajuan->status !== 'disetujui' && $pengajuan->status !== 'approved') {
+            return redirect()->back()->with('error', 'Surat belum disetujui oleh admin.');
         }
+        $detail = $pengajuan->detail ?? [];
 
-        // Decode detail jika berupa JSON
-        $detail = is_array($pengajuan->detail)
-            ? $pengajuan->detail
-            : json_decode($pengajuan->detail, true) ?? [];
+        // Generate QR Code as SVG Base64 for PDF (Avoids PHP GD dependency)
+        $qrUrl = route('surat-pengajuan.detail', $pengajuan->id);
+        $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($qrUrl) . "&format=svg";
+
+        try {
+            $qrCodeData = file_get_contents($qrApiUrl);
+            $qrCode = base64_encode($qrCodeData);
+        } catch (\Exception $e) {
+            $qrCode = null;
+        }
 
         // Load view PDF sesuai jenis surat
         $pdf = Pdf::loadView('pdf.surat.' . $pengajuan->jenis_surat, [
             'pengajuan' => $pengajuan,
             'detail' => $detail,
-            'user' => $pengajuan->user
+            'user' => $pengajuan->user,
+            'qrCode' => $qrCode
         ]);
 
         // Nama file untuk download
