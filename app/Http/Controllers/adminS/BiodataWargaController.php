@@ -47,8 +47,8 @@ class BiodataWargaController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'nik' => 'required|string|max:20|unique:users',
-            'no_kk' => 'nullable|string|max:20',
+            'nik' => 'required|digits:16|unique:users',
+            'no_kk' => 'nullable|digits:16',
             'jenis_kelamin' => 'required|in:L,P',
             'tempat_lahir' => 'nullable|string|max:255',
             'tanggal_lahir' => 'nullable|date',
@@ -102,8 +102,8 @@ class BiodataWargaController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'nik' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($warga->id)],
-            'no_kk' => 'nullable|string|max:20',
+            'nik' => ['required', 'digits:16', Rule::unique('users')->ignore($warga->id)],
+            'no_kk' => 'nullable|digits:16',
             'jenis_kelamin' => 'required|in:L,P',
             'tanggal_lahir' => 'nullable|date',
             'alamat' => 'nullable|string|max:255',

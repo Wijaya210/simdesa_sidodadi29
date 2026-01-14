@@ -17,15 +17,12 @@ class LoginController extends Controller
     {
         // Validasi input
         $request->validate([
-            'login' => 'required', // Bisa Email (Admin) atau NIK (Warga)
+            'login' => 'required|email', // Hanya Email
             'password' => 'required',
         ]);
 
-        // Cek apakah input adalah email atau NIK
-        $loginType = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nik';
-
         $credentials = [
-            $loginType => $request->login,
+            'email' => $request->login,
             'password' => $request->password
         ];
 

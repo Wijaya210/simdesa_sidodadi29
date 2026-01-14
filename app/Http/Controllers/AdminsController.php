@@ -18,7 +18,7 @@ class AdminsController extends Controller
         $pengaduan = \App\Models\Pengaduan::count();
         $programBantuan = \App\Models\ProgramBantuan::count();
 
-        return view('Admins.dashboard', compact('totalWarga', 'suratMasuk', 'pengaduan', 'programBantuan'));
+        return view('admins.dashboard', compact('totalWarga', 'suratMasuk', 'pengaduan', 'programBantuan'));
     }
 
     // Logout admin

@@ -112,8 +112,9 @@
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0"><i
                                         class="fas fa-id-card text-muted"></i></span>
-                                <input type="number" name="nik" class="form-control border-start-0 ps-0"
-                                    value="{{ old('nik') }}" placeholder="Nomor Induk Kependudukan" required>
+                                <input type="text" name="nik" class="form-control digits-16 border-start-0 ps-0"
+                                    value="{{ old('nik') }}" placeholder="Nomor Induk Kependudukan (16 Digit)"
+                                    maxlength="16" minlength="16" pattern="\d*" required>
                             </div>
                         </div>
 
@@ -135,7 +136,7 @@
                                 <span class="input-group-text bg-white border-end-0"><i
                                         class="fas fa-lock text-muted"></i></span>
                                 <input type="password" name="password" class="form-control border-start-0 ps-0"
-                                    placeholder="Minimal 8 karakter" required>
+                                    placeholder="Minimal 8 karakter" minlength="8" required>
                             </div>
                         </div>
 
@@ -146,7 +147,8 @@
                                 <span class="input-group-text bg-white border-end-0"><i
                                         class="fas fa-check-circle text-muted"></i></span>
                                 <input type="password" name="password_confirmation"
-                                    class="form-control border-start-0 ps-0" placeholder="Ulangi password" required>
+                                    class="form-control border-start-0 ps-0" placeholder="Ulangi password" minlength="8"
+                                    required>
                             </div>
                         </div>
 
@@ -166,6 +168,13 @@
         </div>
     </div>
 
+    <script>
+        document.querySelectorAll('.digits-16').forEach(input => {
+            input.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').substring(0, 16);
+            });
+        });
+    </script>
 </body>
 
 </html>

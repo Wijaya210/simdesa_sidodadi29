@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM Desa - Sidodadi</title>
+    <title>SIM DESA - Sidodadi</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -29,7 +29,8 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <i class="fas fa-landmark me-2"></i>SIM Desa
+                <img src="{{ asset('images/gambar_logo_sidoarjo.png') }}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+                SIM DESA
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -46,10 +47,24 @@
                                 <a class="nav-link" href="{{ route('admins.dashboard') }}">Dashboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.surat.index') }}">Surat</a>
+                                <a class="nav-link" href="{{ route('admin.surat.index') }}">
+                                    Surat
+                                    @if(isset($unreadSurat) && $unreadSurat > 0)
+                                        <span class="badge bg-danger rounded-pill ms-1" style="font-size: 0.7em;">
+                                            {{ $unreadSurat > 99 ? '99+' : $unreadSurat }}
+                                        </span>
+                                    @endif
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.pengaduan.index') }}">Pengaduan</a>
+                                <a class="nav-link" href="{{ route('admin.pengaduan.index') }}">
+                                    Pengaduan
+                                    @if(isset($unreadPengaduan) && $unreadPengaduan > 0)
+                                        <span class="badge bg-danger rounded-pill ms-1" style="font-size: 0.7em;">
+                                            {{ $unreadPengaduan > 99 ? '99+' : $unreadPengaduan }}
+                                        </span>
+                                    @endif
+                                </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.program-bantuan.index') }}">Bantuan</a>
@@ -107,7 +122,9 @@
                                             <i class="fas fa-user-circle me-2"></i>Lihat Profil
                                         </a>
                                     </li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
                                 @endif
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST">

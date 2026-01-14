@@ -13,7 +13,7 @@
                     <h4 class="fw-bold text-primary mb-0">📄 Detail Pengajuan Surat</h4>
                     @if ($pengajuan->status == 'pending')
                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Menunggu</span>
-                    @elseif ($pengajuan->status == 'approved' || $pengajuan->status == 'disetujui')
+                    @elseif ($pengajuan->status == 'disetujui')
                         <span class="badge bg-success px-3 py-2 rounded-pill">Disetujui</span>
                     @else
                         <span class="badge bg-danger px-3 py-2 rounded-pill">Ditolak</span>
@@ -33,7 +33,7 @@
                             <div class="col-md-8 fw-bold">{{ $pengajuan->created_at->format('d F Y, H:i') }} WIB</div>
                         </div>
 
-                        @if(in_array($pengajuan->status, ['disetujui', 'approved']))
+                        @if($pengajuan->status == 'disetujui')
                             <div
                                 class="position-absolute top-50 end-0 translate-middle-y me-4 d-none d-md-block text-center bg-white p-2 rounded shadow-sm">
                                 <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{ urlencode(url()->current()) }}"

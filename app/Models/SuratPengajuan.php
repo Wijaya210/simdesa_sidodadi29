@@ -18,6 +18,7 @@ class SuratPengajuan extends Model
         'detail',
         'catatan_admin',
         'tanggal_pengajuan',
+        'is_read',
     ];
 
     protected $casts = [

@@ -13,8 +13,8 @@
                 <h4 class="fw-bold text-primary mb-0">📄 Detail Pengajuan Surat</h4>
                 @if ($surat->status == 'pending' || $surat->status == 'menunggu')
                     <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">Menunggu Verifikasi</span>
-                @elseif ($surat->status == 'disetujui' || $surat->status == 'approved')
-                    <span class="badge bg-success px-3 py-2 rounded-pill">Disetujui</span>
+                @elseif ($surat->status == 'disetujui')
+                    <span class="badge bg-success px-3 py-2">Disetujui</span>
                 @else
                     <span class="badge bg-danger px-3 py-2 rounded-pill">Ditolak</span>
                 @endif

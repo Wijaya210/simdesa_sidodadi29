@@ -27,8 +27,9 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Tanggal</label>
                                 <input type="date" name="tanggal"
-                                    class="form-control @error('tanggal') is-invalid @enderror"
-                                    value="{{ old('tanggal', $keuangan->tanggal) }}" required>
+                                    class="form-control bg-light @error('tanggal') is-invalid @enderror"
+                                    value="{{ old('tanggal', $keuangan->tanggal) }}" required readonly tabindex="-1"
+                                    onclick="return false;">
                                 @error('tanggal')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

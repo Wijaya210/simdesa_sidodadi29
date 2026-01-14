@@ -104,7 +104,7 @@ class SuratPengajuanController extends Controller
             ->findOrFail($id);
 
         // Validasi: hanya surat yang sudah disetujui yang bisa didownload
-        if ($pengajuan->status !== 'disetujui' && $pengajuan->status !== 'approved') {
+        if ($pengajuan->status !== 'disetujui') {
             return redirect()->back()->with('error', 'Surat belum disetujui oleh admin.');
         }
         $detail = $pengajuan->detail ?? [];

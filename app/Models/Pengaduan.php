@@ -13,6 +13,7 @@ class Pengaduan extends Model
         'foto',
         'status',
         'tanggapan',
+        'is_read',
     ];
 
     public function user()

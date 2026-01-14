@@ -23,12 +23,14 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">NIK <span class="text-danger">*</span></label>
-                                <input type="number" name="nik" class="form-control" required placeholder="16 Digit NIK">
+                                <input type="text" name="nik" class="form-control digits-16" required
+                                    placeholder="16 Digit NIK" maxlength="16" minlength="16" pattern="\d*">
                             </div>
                             <!-- Email dihapus sesuai request, auto-generate di controller -->
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">No. KK</label>
-                                <input type="number" name="no_kk" class="form-control" placeholder="16 Digit No. KK">
+                                <input type="text" name="no_kk" class="form-control digits-16" placeholder="16 Digit No. KK"
+                                    maxlength="16" minlength="16" pattern="\d*">
                             </div>
 
                             <div class="col-md-6">
@@ -85,4 +87,14 @@
             </div>
         </div>
     </div>
+    @if(!isset($js_validation_added))
+        <script>
+            document.querySelectorAll('.digits-16').forEach(input => {
+                input.addEventListener('input', function () {
+                    this.value = this.value.replace(/[^0-9]/g, '').substring(0, 16);
+                });
+            });
+        </script>
+        @php $js_validation_added = true; @endphp
+    @endif
 @endsection

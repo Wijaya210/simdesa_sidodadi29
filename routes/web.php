@@ -6,8 +6,9 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\warga\SuratPengajuanController;
-use App\Http\Controllers\admins\SuratPengajuanController as AdminSuratPengajuanController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Warga\SuratPengajuanController;
+use App\Http\Controllers\Admins\SuratPengajuanController as AdminSuratPengajuanController;
 
 // ========================
 // Beranda
@@ -30,6 +31,8 @@ Route::get('/admin/dashboard', [AdminsController::class, 'dashboard'])
 // ========================
 Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+Route::get('/register/verify', [RegisterController::class, 'showVerifyForm'])->name('register.verify.form');
+Route::post('/register/verify', [RegisterController::class, 'verify'])->name('register.verify');
 
 // ========================
 // LOGIN
@@ -37,6 +40,14 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.s
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'process'])->name('login.process');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// ========================
+// FORGOT PASSWORD
+// ========================
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetOtp'])->name('password.email');
+Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
+Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
 // Dashboard (hanya user login)
 Route::middleware('auth')->group(function () {

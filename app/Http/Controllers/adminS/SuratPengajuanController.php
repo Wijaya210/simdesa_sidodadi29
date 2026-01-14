@@ -52,6 +52,11 @@ class SuratPengajuanController extends Controller
     {
         $surat = SuratPengajuan::with('user')->findOrFail($id);
 
+        if (!$surat->is_read) {
+            $surat->is_read = true;
+            $surat->save();
+        }
+
         return view('admins.pengajuan.show', compact('surat'));
     }
 

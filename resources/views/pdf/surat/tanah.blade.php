@@ -75,11 +75,21 @@
 
 <body>
     <div class="header">
-        <h2>Pemerintah Desa Sidodadi</h2>
-        <h2>Kecamatan Candi</h2>
-        <h2>Kabupaten Sidoarjo</h2>
-        <p>Alamat: Jalan Raya Sidodadi No.1983, Sidodadi, Candi, Sudio, Sidodadi, Kec. Sidoarjo, Kabupaten Sidoarjo,
-            Jawa Timur 61271</p>
+        <table style="width: 100%; border-bottom: 2px solid #000; padding-bottom: 10px;">
+            <tr>
+                <td style="width: 90px; text-align: center;">
+                    <img src="{{ public_path('images/gambar_logo_sidoarjo.png') }}" style="width: 80px; height: auto;">
+                </td>
+                <td style="text-align: center;">
+                    <h2 style="margin: 0; font-size: 14pt;">PEMERINTAH KABUPATEN SIDOARJO</h2>
+                    <h2 style="margin: 0; font-size: 14pt;">KECAMATAN CANDI</h2>
+                    <h2 style="margin: 0; font-size: 16pt;">DESA SIDODADI</h2>
+                    <p style="margin: 2px 0 0 0; font-size: 10pt;">
+                        Jalan Raya Sidodadi No.1983, Sidodadi, Kec. Candi, Kabupaten Sidoarjo, Jawa Timur 61271
+                    </p>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div class="title">

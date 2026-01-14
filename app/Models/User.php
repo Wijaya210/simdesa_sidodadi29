@@ -27,6 +27,8 @@ class User extends Authenticatable
         'tanggal_lahir',
         'is_admin_added',
         'is_registered',
+        'otp',
+        'otp_expires_at',
     ];
     protected $hidden = [
         'password',

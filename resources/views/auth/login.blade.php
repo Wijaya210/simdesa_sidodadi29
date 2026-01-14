@@ -80,13 +80,20 @@
             <div class="col-md-6 col-lg-5">
                 <div class="auth-card">
                     <div class="text-center mb-4">
-                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                            style="width: 60px; height: 60px;">
-                            <i class="fas fa-landmark fa-2x"></i>
+                        <div class="mb-3">
+                            <img src="{{ asset('images/gambar_logo_sidoarjo.png') }}" alt="Logo Sidoarjo"
+                                style="width: 80px; height: auto;">
                         </div>
                         <h3 class="fw-bold text-dark">Selamat Datang</h3>
                         <p class="text-muted">Silakan login untuk mengakses layanan desa.</p>
                     </div>
+
+                    @if(session('success'))
+                        <div class="alert alert-success d-flex align-items-center" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <div>{{ session('success') }}</div>
+                        </div>
+                    @endif
 
                     @if(session('error'))
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
@@ -98,16 +105,16 @@
                     <form method="POST" action="{{ route('login.process') }}">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label fw-bold small text-uppercase text-muted">Email / NIK</label>
+                            <label class="form-label fw-bold small text-uppercase text-muted">Email</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0"><i
-                                        class="fas fa-user text-muted"></i></span>
-                                <input type="text" name="login" class="form-control border-start-0 ps-0"
-                                    placeholder="Masukkan Email atau NIK" required>
+                                        class="fas fa-envelope text-muted"></i></span>
+                                <input type="email" name="login" class="form-control border-start-0 ps-0"
+                                    placeholder="Masukkan Email (Gmail)" required>
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <label class="form-label fw-bold small text-uppercase text-muted">Password</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0"><i
@@ -115,6 +122,13 @@
                                 <input type="password" name="password" class="form-control border-start-0 ps-0"
                                     placeholder="********" required>
                             </div>
+                        </div>
+
+                        <div class="text-end mb-4">
+                            <a href="{{ route('password.request') }}"
+                                class="text-muted small text-decoration-none hover-primary">
+                                Lupa Password?
+                            </a>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 mb-3">

@@ -24,6 +24,7 @@ class PengaduanController extends Controller
         $pengaduan->update([
             'status' => $request->status,
             'tanggapan' => $request->tanggapan,
+            'is_read' => true,
         ]);
 
         return redirect()->back()->with('success', 'Status pengaduan berhasil diperbarui!');
