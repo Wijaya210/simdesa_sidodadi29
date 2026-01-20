@@ -84,52 +84,7 @@
                                 </button>
                             </td>
                         </tr>
-
-                        <!-- Modal Tanggapan -->
-                        <div class="modal fade" id="responseModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content border-0 shadow-lg rounded-4">
-                                    <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title fw-bold">Tanggapi Pengaduan</h5>
-                                        <button type="button" class="btn-close btn-close-white"
-                                            data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <form action="{{ route('admin.pengaduan.update', $item->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-body bg-light">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Isi Pengaduan:</label>
-                                                <div class="p-3 bg-white rounded border">{{ $item->isi }}</div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Update Status</label>
-                                                <select name="status" class="form-select">
-                                                    <option value="pending" {{ $item->status == 'pending' ? 'selected' : '' }}>
-                                                        Menunggu</option>
-                                                    <option value="diproses" {{ $item->status == 'diproses' ? 'selected' : '' }}>
-                                                        Diproses</option>
-                                                    <option value="selesai" {{ $item->status == 'selesai' ? 'selected' : '' }}>
-                                                        Selesai</option>
-                                                    <option value="ditolak" {{ $item->status == 'ditolak' ? 'selected' : '' }}>
-                                                        Ditolak</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Berikan Tanggapan</label>
-                                                <textarea name="tanggapan" class="form-control" rows="4"
-                                                    placeholder="Tulis tanggapan Anda di sini...">{{ $item->tanggapan }}</textarea>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary fw-bold">Simpan Tanggapan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        </tr>
                     @empty
                         <tr>
                             <td colspan="7" class="text-center py-5 text-muted">
@@ -143,4 +98,50 @@
             </table>
         </div>
     </div>
+
+    <!-- Modals outside table -->
+    @foreach ($pengaduans as $item)
+        <div class="modal fade" id="responseModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content border-0 shadow-lg rounded-4">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title fw-bold">Tanggapi Pengaduan</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ route('admin.pengaduan.update', $item->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body bg-light">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Isi Pengaduan:</label>
+                                <div class="p-3 bg-white rounded border">{{ $item->isi }}</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Update Status</label>
+                                <select name="status" class="form-select">
+                                    <option value="pending" {{ $item->status == 'pending' ? 'selected' : '' }}>
+                                        Menunggu</option>
+                                    <option value="diproses" {{ $item->status == 'diproses' ? 'selected' : '' }}>
+                                        Diproses</option>
+                                    <option value="selesai" {{ $item->status == 'selesai' ? 'selected' : '' }}>
+                                        Selesai</option>
+                                    <option value="ditolak" {{ $item->status == 'ditolak' ? 'selected' : '' }}>
+                                        Ditolak</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Berikan Tanggapan</label>
+                                <textarea name="tanggapan" class="form-control" rows="4"
+                                    placeholder="Tulis tanggapan Anda di sini...">{{ $item->tanggapan }}</textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary fw-bold">Simpan Tanggapan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endsection

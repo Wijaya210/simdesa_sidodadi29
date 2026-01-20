@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admins;
 use App\Http\Controllers\Controller;
 use App\Models\SuratPengajuan;
 use Illuminate\Http\Request;
+use App\Helpers\ActivityLogger;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -67,6 +68,8 @@ class SuratPengajuanController extends Controller
         $surat->status = 'disetujui';
         $surat->save();
 
+        ActivityLogger::log('Approve Surat', 'Menyetujui pengajuan surat ' . $surat->jenis_surat . ' dari ' . ($surat->user->name ?? 'Warga'));
+
         return redirect()->back()->with('success', 'Surat berhasil disetujui.');
     }
 
@@ -77,6 +80,8 @@ class SuratPengajuanController extends Controller
         $surat->status = 'ditolak';
         $surat->save();
 
+        ActivityLogger::log('Reject Surat', 'Menolak pengajuan surat ' . $surat->jenis_surat . ' dari ' . ($surat->user->name ?? 'Warga'));
+
         return redirect()->back()->with('success', 'Surat berhasil ditolak.');
     }
 
@@ -84,7 +89,11 @@ class SuratPengajuanController extends Controller
     public function destroy($id)
     {
         $surat = SuratPengajuan::findOrFail($id);
+        $jenis = $surat->jenis_surat;
+        $nama = $surat->user->name ?? 'Warga';
         $surat->delete();
+
+        ActivityLogger::log('Delete Surat', 'Menghapus data pengajuan surat ' . $jenis . ' milik ' . $nama);
 
         return redirect()->route('admin.surat.index')
             ->with('success', 'Surat berhasil dihapus.');

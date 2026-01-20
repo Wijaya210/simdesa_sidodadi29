@@ -29,7 +29,8 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset('images/gambar_logo_sidoarjo.png') }}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top me-2">
+                <img src="{{ asset('images/gambar_logo_sidoarjo.png') }}" alt="Logo" width="30" height="30"
+                    class="d-inline-block align-text-top me-2">
                 SIM DESA
             </a>
 
@@ -67,6 +68,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.berita.index') }}">Berita</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.logs.index') }}">Activity Log</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.program-bantuan.index') }}">Bantuan</a>
                             </li>
                             <li class="nav-item">
@@ -90,6 +97,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('pengaduan.index') }}">Pengaduan</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('berita.index') }}">Berita</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('program-bantuan.index') }}">Bantuan</a>

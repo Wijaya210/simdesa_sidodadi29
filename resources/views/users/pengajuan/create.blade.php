@@ -16,18 +16,13 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            text-decoration: none;
         }
 
         .letter-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
             border-color: #0d6efd;
-        }
-
-        .letter-card.active {
-            border-color: #0d6efd;
-            background-color: #f0f7ff;
-            box-shadow: 0 10px 25px rgba(13, 110, 253, 0.15);
         }
 
         .letter-card .icon-box {
@@ -42,10 +37,6 @@
             transition: all 0.3s ease;
         }
 
-        .letter-card.active .icon-box {
-            transform: scale(1.1);
-        }
-
         .letter-name {
             font-weight: 700;
             font-size: 0.9rem;
@@ -53,101 +44,116 @@
             line-height: 1.3;
             margin-top: 5px;
         }
-
-        .letter-card.active .letter-name {
-            color: #0d6efd;
-        }
     </style>
+
     <div class="row justify-content-center" data-aos="fade-up">
         <div class="col-lg-10">
 
-            <a href="{{ route('surat-pengajuan.index') }}" class="btn btn-light text-primary fw-bold mb-4 shadow-sm">
-                <i class="fas fa-arrow-left me-2"></i>Kembali ke Riwayat
-            </a>
+            @if (!request('type'))
+                {{-- MODE 1: PILIH JENIS SURAT --}}
+                <a href="{{ route('surat-pengajuan.index') }}" class="btn btn-light text-primary fw-bold mb-4 shadow-sm">
+                    <i class="fas fa-arrow-left me-2"></i>Kembali ke Riwayat
+                </a>
 
-            <div class="glass-card">
-                <div class="text-center mb-5">
-                    <h2 class="fw-bold text-primary">📝 Ajukan Surat Baru</h2>
-                    <p class="text-muted">Silakan lengkapi formulir di bawah ini dengan data yang benar.</p>
-                </div>
+                <div class="glass-card">
+                    <div class="text-center mb-5">
+                        <h2 class="fw-bold text-primary">📝 Ajukan Surat Baru</h2>
+                        <p class="text-muted">Silakan pilih jenis surat yang ingin Anda ajukan.</p>
+                    </div>
 
-                <form id="formPengajuan" action="{{ route('surat-pengajuan.store') }}" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="mb-5">
-                    <label class="form-label fw-bold h5 text-primary mb-4">Pilih Jenis Surat</label>
                     <div class="row g-3">
                         <div class="col-md-4 col-6">
-                            <div class="letter-card" onclick="pilihSurat('nikah', this)">
+                            <a href="{{ route('surat-pengajuan.create', ['type' => 'nikah']) }}" class="letter-card">
                                 <div class="icon-box bg-primary-subtle text-primary">
                                     <i class="fas fa-heart"></i>
                                 </div>
                                 <div class="letter-name">Surat Pengantar Nikah</div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 col-6">
-                            <div class="letter-card" onclick="pilihSurat('pindah', this)">
+                            <a href="{{ route('surat-pengajuan.create', ['type' => 'pindah']) }}" class="letter-card">
                                 <div class="icon-box bg-info-subtle text-info">
                                     <i class="fas fa-truck-moving"></i>
                                 </div>
                                 <div class="letter-name">Surat Keterangan Pindah</div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 col-6">
-                            <div class="letter-card" onclick="pilihSurat('tanah', this)">
+                            <a href="{{ route('surat-pengajuan.create', ['type' => 'tanah']) }}" class="letter-card">
                                 <div class="icon-box bg-success-subtle text-success">
                                     <i class="fas fa-map-marked-alt"></i>
                                 </div>
                                 <div class="letter-name">Surat Riwayat Tanah</div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 col-6">
-                            <div class="letter-card" onclick="pilihSurat('usaha', this)">
+                            <a href="{{ route('surat-pengajuan.create', ['type' => 'usaha']) }}" class="letter-card">
                                 <div class="icon-box bg-warning-subtle text-warning">
                                     <i class="fas fa-store"></i>
                                 </div>
                                 <div class="letter-name">Surat Usaha (SKU)</div>
-                            </div>
+                            </a>
                         </div>
                         <div class="col-md-4 col-12">
-                            <div class="letter-card" onclick="pilihSurat('ahli_waris', this)">
+                            <a href="{{ route('surat-pengajuan.create', ['type' => 'ahli_waris']) }}" class="letter-card">
                                 <div class="icon-box bg-danger-subtle text-danger">
                                     <i class="fas fa-users"></i>
                                 </div>
                                 <div class="letter-name">Keterangan Ahli Waris</div>
-                            </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <a href="{{ route('surat-pengajuan.create', ['type' => 'sktm']) }}" class="letter-card">
+                                <div class="icon-box bg-dark-subtle text-dark">
+                                    <i class="fas fa-hand-holding-usd"></i>
+                                </div>
+                                <div class="letter-name">Surat Keterangan Tidak Mampu (SKTM)</div>
+                            </a>
                         </div>
                     </div>
-                    <input type="hidden" name="jenis_surat" id="jenisSurat" required>
-                    @error('jenis_surat') <div class="text-danger mt-2">{{ $message }}</div> @enderror
                 </div>
+            @else
+                {{-- MODE 2: FORM PENGISIAN --}}
+                <a href="{{ route('surat-pengajuan.create') }}" class="btn btn-light text-primary fw-bold mb-4 shadow-sm">
+                    <i class="fas fa-arrow-left me-2"></i>Kembali ke Pilihan Surat
+                </a>
 
-                    <div id="kontenFormDinamis" style="display: none;">
-
-                        <div class="card border-0 bg-light rounded-4 mb-4 p-4">
-                            <h5 class="fw-bold text-primary mb-4"><i class="fas fa-file-upload me-2"></i>1. Dokumen
-                                Persyaratan</h5>
-                            <div id="uploadChecklist" class="vstack gap-3">
-                                {{-- Checklist file akan dimasukkan di sini oleh JS --}}
-                            </div>
-                        </div>
-
-                        <div class="card border-0 bg-light rounded-4 mb-5 p-4">
-                            <h5 class="fw-bold text-primary mb-4"><i class="fas fa-edit me-2"></i>2. Data Tambahan</h5>
-                            <div class="table-responsive">
-                                <table class="table table-borderless">
-                                    <tbody id="persyaratanTabelBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold shadow-lg">
-                            <i class="fas fa-paper-plane me-2"></i> Kirim Pengajuan Surat
-                        </button>
+                <div class="glass-card">
+                    <div class="text-center mb-5">
+                        <h2 class="fw-bold text-primary">📝 Form Pengajuan Surat</h2>
+                        <h5 class="text-muted">{{ ucfirst(str_replace('_', ' ', request('type'))) }}</h5>
                     </div>
-                </form>
-            </div>
+
+                    <form id="formPengajuan" action="{{ route('surat-pengajuan.store') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="jenis_surat" id="jenisSurat" value="{{ request('type') }}" required>
+
+                        <div id="kontenFormDinamis">
+                            <div class="card border-0 bg-light rounded-4 mb-4 p-4">
+                                <h5 class="fw-bold text-primary mb-4"><i class="fas fa-file-upload me-2"></i>1. Dokumen
+                                    Persyaratan</h5>
+                                <div id="uploadChecklist" class="vstack gap-3">
+                                    {{-- Checklist file akan dimasukkan di sini oleh JS --}}
+                                </div>
+                            </div>
+
+                            <div class="card border-0 bg-light rounded-4 mb-5 p-4">
+                                <h5 class="fw-bold text-primary mb-4"><i class="fas fa-edit me-2"></i>2. Data Tambahan</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-borderless">
+                                        <tbody id="persyaratanTabelBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold shadow-lg">
+                                <i class="fas fa-paper-plane me-2"></i> Kirim Pengajuan Surat
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -240,31 +246,42 @@
                     keterangan: `<input type="text" class="form-control" name="hubungan_pewaris" placeholder="Contoh: Anak Kandung, Istri Sah" required>`
                 }
                 ]
+            },
+            sktm: {
+                files: [
+                    "Pengantar RT & RW", "Fotokopi KTP Pemohon", "Fotokopi Kartu Keluarga (KK)",
+                    "Surat Pernyataan Tidak Mampu (bermaterai)"
+                ],
+                persyaratan: [{
+                    syarat: "Keperluan",
+                    keterangan: `<textarea class="form-control" name="keperluan" rows="2" placeholder="Contoh: Persyaratan Beasiswa Sekolah, Keringanan Biaya RS" required></textarea>`
+                },
+                {
+                    syarat: "Nama Anak (Opsional)",
+                    keterangan: `<input type="text" class="form-control" name="nama_anak" placeholder="Isi jika untuk keperluan anak sekolah">`
+                },
+                {
+                    syarat: "Asal Sekolah/Universitas (Opsional)",
+                    keterangan: `<input type="text" class="form-control" name="asal_sekolah" placeholder="Isi jika untuk keperluan anak sekolah">`
+                }
+                ]
             }
         };
 
-        function pilihSurat(jenis, element) {
-        // Set value to hidden input
-        document.getElementById('jenisSurat').value = jenis;
+        document.addEventListener('DOMContentLoaded', function () {
+            const types = new URLSearchParams(window.location.search);
+            const jenisSurat = document.getElementById('jenisSurat')?.value;
 
-        // Toggle active class
-        document.querySelectorAll('.letter-card').forEach(card => card.classList.remove('active'));
-        element.classList.add('active');
+            if (jenisSurat && dataSurat[jenisSurat]) {
+                tampilkanForm(jenisSurat);
+            }
+        });
 
-        // Run existing display logic
-        tampilkanForm();
-    }
-
-    function tampilkanForm() {
-            const jenisSurat = document.getElementById('jenisSurat').value;
-            const kontenFormDinamis = document.getElementById('kontenFormDinamis');
+        function tampilkanForm(jenisSurat) {
             const uploadChecklist = document.getElementById('uploadChecklist');
             const persyaratanTabelBody = document.getElementById('persyaratanTabelBody');
 
-            if (!dataSurat[jenisSurat]) {
-                kontenFormDinamis.style.display = 'none';
-                return;
-            }
+            if (!dataSurat[jenisSurat]) return;
 
             const data = dataSurat[jenisSurat];
 
@@ -273,11 +290,11 @@
             data.files.forEach((file, index) => {
                 const fieldName = 'file_attachments[]';
                 uploadHTML += `
-                    <div class="bg-white p-3 rounded shadow-sm d-flex align-items-center justify-content-between">
-                        <span class="fw-medium"><i class="fas fa-file-alt text-secondary me-2"></i> ${file} <span class="text-danger">*</span></span>
-                        <input type="file" class="form-control form-control-sm w-50" name="${fieldName}" required>
-                    </div>
-                `;
+                                <div class="bg-white p-3 rounded shadow-sm d-flex align-items-center justify-content-between">
+                                    <span class="fw-medium"><i class="fas fa-file-alt text-secondary me-2"></i> ${file} <span class="text-danger">*</span></span>
+                                    <input type="file" class="form-control form-control-sm w-50" name="${fieldName}" required>
+                                </div>
+                            `;
             });
             uploadChecklist.innerHTML = uploadHTML;
 
@@ -285,20 +302,13 @@
             let persyaratanHTML = '';
             data.persyaratan.forEach(item => {
                 persyaratanHTML += `
-                    <tr>
-                        <td class="fw-bold pt-3" style="width: 35%;">${item.syarat}</td>
-                        <td>${item.keterangan}</td>
-                    </tr>
-                `;
+                                <tr>
+                                    <td class="fw-bold pt-3" style="width: 35%;">${item.syarat}</td>
+                                    <td>${item.keterangan}</td>
+                                </tr>
+                            `;
             });
             persyaratanTabelBody.innerHTML = persyaratanHTML;
-
-            kontenFormDinamis.style.display = 'block';
-
-            // Scroll to form content
-            setTimeout(() => {
-                kontenFormDinamis.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
         }
     </script>
 @endsection

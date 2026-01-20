@@ -17,6 +17,7 @@ class SuratPengajuanController extends Controller
             'tanah' => 'Surat Keterangan Riwayat Tanah',
             'usaha' => 'Surat Keterangan Usaha (SKU)',
             'ahli_waris' => 'Surat Keterangan Ahli Waris',
+            'sktm' => 'Surat Keterangan Tidak Mampu',
         ];
 
         $pengajuans = SuratPengajuan::where('user_id', auth()->id())
@@ -55,19 +56,79 @@ class SuratPengajuanController extends Controller
             $detail['files'] = $files;
         }
 
-        $data = [
-            'user_id' => auth()->user()->id,
-            'jenis_surat' => $request->jenis_surat,
-            'status' => 'pending',
-            'tanggal_pengajuan' => now(),
-            'catatan_admin' => null,
-            'detail' => $detail,
-        ];
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
 
-        SuratPengajuan::create($data);
+            // 1. Simpan Parent (SuratPengajuan)
+            $pengajuan = SuratPengajuan::create([
+                'user_id' => auth()->user()->id,
+                'jenis_surat' => $request->jenis_surat,
+                'status' => 'pending',
+                'tanggal_pengajuan' => now(),
+                'catatan_admin' => null,
+                'detail' => $detail, // Tetap simpan JSON sebagai backup/mudah akses di view lama
+            ]);
 
-        return redirect()->route('surat-pengajuan.index')
-            ->with('success', 'Pengajuan berhasil dikirim! Status dapat dilihat di riwayat.');
+            // 2. Simpan Child ke Tabel Spesifik
+            switch ($request->jenis_surat) {
+                case 'nikah':
+                    \App\Models\SuratPengajuanNikah::create([
+                        'surat_pengajuan_id' => $pengajuan->id,
+                        'nama_pasangan' => $request->nama_pasangan,
+                        'alamat_pasangan' => $request->alamat_pasangan,
+                    ]);
+                    break;
+                case 'pindah':
+                    \App\Models\SuratPengajuanPindah::create([
+                        'surat_pengajuan_id' => $pengajuan->id,
+                        'alamat_tujuan' => $request->alamat_tujuan,
+                        'provinsi_tujuan' => $request->provinsi_tujuan,
+                    ]);
+                    break;
+                case 'tanah':
+                    \App\Models\SuratPengajuanTanah::create([
+                        'surat_pengajuan_id' => $pengajuan->id,
+                        'luas_tanah' => $request->luas_tanah,
+                        'lokasi_tanah' => $request->lokasi_tanah,
+                    ]);
+                    break;
+                case 'usaha':
+                    \App\Models\SuratPengajuanUsaha::create([
+                        'surat_pengajuan_id' => $pengajuan->id,
+                        'nama_usaha' => $request->nama_usaha,
+                        'jenis_usaha' => $request->jenis_usaha,
+                        'alamat_usaha' => $request->alamat_usaha,
+                    ]);
+                    break;
+                case 'ahli_waris':
+                    \App\Models\SuratPengajuanAhliWaris::create([
+                        'surat_pengajuan_id' => $pengajuan->id,
+                        'tgl_kematian' => $request->tgl_kematian,
+                        'hubungan_pewaris' => $request->hubungan_pewaris,
+                    ]);
+                    break;
+                case 'sktm':
+                    \App\Models\SuratPengajuanSktm::create([
+                        'surat_pengajuan_id' => $pengajuan->id,
+                        'keperluan' => $request->keperluan,
+                        'nama_anak' => $request->nama_anak,
+                        'asal_sekolah' => $request->asal_sekolah,
+                    ]);
+                    break;
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            // Log activity
+            \App\Helpers\ActivityLogger::log('Create', 'Pengajuan surat baru: ' . $request->jenis_surat);
+
+            return redirect()->route('surat-pengajuan.index')
+                ->with('success', 'Pengajuan berhasil dikirim! Data tersimpan di database.');
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage())->withInput();
+        }
     }
 
     // ======================
@@ -87,6 +148,7 @@ class SuratPengajuanController extends Controller
             'tanah' => ['lokasi_tanah' => 'Lokasi Tanah', 'luas_tanah' => 'Luas Tanah (m²)'],
             'usaha' => ['nama_usaha' => 'Nama Usaha', 'jenis_usaha' => 'Jenis Usaha', 'alamat_usaha' => 'Alamat Usaha'],
             'ahli_waris' => ['hubungan_pewaris' => 'Hubungan Pewaris', 'tgl_kematian' => 'Tanggal Kematian'],
+            'sktm' => ['keperluan' => 'Keperluan', 'nama_anak' => 'Nama Anak (Jika ada)', 'asal_sekolah' => 'Asal Sekolah/Univ (Jika ada)'],
         ];
 
         $fields = $fieldMap[$pengajuan->jenis_surat] ?? [];
@@ -110,7 +172,7 @@ class SuratPengajuanController extends Controller
         $detail = $pengajuan->detail ?? [];
 
         // Generate QR Code as SVG Base64 for PDF (Avoids PHP GD dependency)
-        $qrUrl = route('surat-pengajuan.detail', $pengajuan->id);
+        $qrUrl = route('surat.validasi', $pengajuan->id);
         $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($qrUrl) . "&format=svg";
 
         try {
@@ -120,12 +182,17 @@ class SuratPengajuanController extends Controller
             $qrCode = null;
         }
 
+        // Fetch data Desa untuk header dan tanda tangan
+        $desa = \App\Models\Desa::first();
+
         // Load view PDF sesuai jenis surat
         $pdf = Pdf::loadView('pdf.surat.' . $pengajuan->jenis_surat, [
             'pengajuan' => $pengajuan,
             'detail' => $detail,
             'user' => $pengajuan->user,
-            'qrCode' => $qrCode
+            'qrCode' => $qrCode,
+            'qrUrl' => $qrUrl,
+            'desa' => $desa
         ]);
 
         // Nama file untuk download

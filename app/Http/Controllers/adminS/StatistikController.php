@@ -7,6 +7,7 @@ use App\Models\Desa;
 use App\Models\StatistikDesa;
 use App\Models\AgamaDesa;
 use App\Models\PekerjaanDesa;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StatistikController extends Controller
@@ -22,7 +23,14 @@ class StatistikController extends Controller
         $agamas = AgamaDesa::where('desa_id', $desa->id)->get();
         $pekerjaans = PekerjaanDesa::where('desa_id', $desa->id)->get();
 
-        return view('admins.statistik.index', compact('desa', 'statistik', 'agamas', 'pekerjaans'));
+        // Data Dinamis dari database Warga
+        $dynamicStats = [
+            'total_penduduk' => User::where('role', 'warga')->count(),
+            'laki_laki' => User::where('role', 'warga')->where('jenis_kelamin', 'L')->count(),
+            'perempuan' => User::where('role', 'warga')->where('jenis_kelamin', 'P')->count(),
+        ];
+
+        return view('admins.statistik.index', compact('desa', 'statistik', 'agamas', 'pekerjaans', 'dynamicStats'));
     }
 
     public function update(Request $request)
@@ -33,10 +41,6 @@ class StatistikController extends Controller
         }
 
         $request->validate([
-            'jumlah_penduduk' => 'required|integer|min:0',
-            'jumlah_laki_laki' => 'required|integer|min:0',
-            'jumlah_perempuan' => 'required|integer|min:0',
-            'jumlah_keluarga' => 'required|integer|min:0',
             'luas_wilayah' => 'required|numeric|min:0',
             'agama' => 'nullable|array',
             'pekerjaan' => 'nullable|array',
@@ -44,13 +48,9 @@ class StatistikController extends Controller
             'new_pekerjaan_value' => 'nullable|integer|min:0',
         ]);
 
-        // Update Statistik Umum
+        // Update Statistik Umum (Hanya Luas Wilayah yang manual, sisanya otomatis)
         $statistik = StatistikDesa::firstOrCreate(['desa_id' => $desa->id]);
         $statistik->update([
-            'jumlah_penduduk' => $request->jumlah_penduduk,
-            'jumlah_laki_laki' => $request->jumlah_laki_laki,
-            'jumlah_perempuan' => $request->jumlah_perempuan,
-            'jumlah_keluarga' => $request->jumlah_keluarga,
             'luas_wilayah' => $request->luas_wilayah,
         ]);
 

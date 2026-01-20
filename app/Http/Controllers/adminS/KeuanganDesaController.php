@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admins;
 use App\Http\Controllers\Controller;
 use App\Models\KeuanganDesa;
 use Illuminate\Http\Request;
+use App\Helpers\ActivityLogger;
 
 class KeuanganDesaController extends Controller
 {
@@ -45,6 +46,8 @@ class KeuanganDesaController extends Controller
 
         KeuanganDesa::create($request->all());
 
+        ActivityLogger::log('Create', 'Menambahkan transaksi keuangan: ' . $request->keterangan . ' (Rp ' . number_format($request->jumlah, 0, ',', '.') . ')');
+
         return redirect()->route('admin.keuangan.index')->with('success', 'Transaksi berhasil ditambahkan!');
     }
 
@@ -74,6 +77,8 @@ class KeuanganDesaController extends Controller
 
         $keuangan->update($request->all());
 
+        ActivityLogger::log('Update', 'Memperbarui transaksi keuangan: ' . $keuangan->keterangan);
+
         return redirect()->route('admin.keuangan.index')->with('success', 'Transaksi berhasil diperbarui!');
     }
 
@@ -83,7 +88,10 @@ class KeuanganDesaController extends Controller
     public function destroy($id)
     {
         $keuangan = KeuanganDesa::findOrFail($id);
+        $keterangan = $keuangan->keterangan;
         $keuangan->delete();
+
+        ActivityLogger::log('Delete', 'Menghapus transaksi keuangan: ' . $keterangan);
 
         return redirect()->route('admin.keuangan.index')->with('success', 'Transaksi berhasil dihapus!');
     }

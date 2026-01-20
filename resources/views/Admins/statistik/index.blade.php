@@ -33,24 +33,23 @@
                         <h5 class="fw-bold text-primary mb-3 border-bottom pb-2">📍 Info Umum & Gender</h5>
                         <div class="row g-3">
                             <div class="col-12">
+                                <div class="alert alert-info py-2 small mb-2 border-0 shadow-none">
+                                    <i class="fas fa-info-circle me-2"></i>Data di bawah ini otomatis dihitung dari database
+                                    warga.
+                                </div>
                                 <label class="form-label fw-semibold">Total Penduduk</label>
-                                <input type="number" name="jumlah_penduduk" class="form-control"
-                                    value="{{ $statistik->jumlah_penduduk }}">
+                                <input type="number" class="form-control bg-light"
+                                    value="{{ $dynamicStats['total_penduduk'] }}" readonly>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Laki-laki</label>
-                                <input type="number" name="jumlah_laki_laki" class="form-control"
-                                    value="{{ $statistik->jumlah_laki_laki }}">
+                                <input type="number" class="form-control bg-light" value="{{ $dynamicStats['laki_laki'] }}"
+                                    readonly>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Perempuan</label>
-                                <input type="number" name="jumlah_perempuan" class="form-control"
-                                    value="{{ $statistik->jumlah_perempuan }}">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-semibold">Jumlah Keluarga</label>
-                                <input type="number" name="jumlah_keluarga" class="form-control"
-                                    value="{{ $statistik->jumlah_keluarga }}">
+                                <input type="number" class="form-control bg-light" value="{{ $dynamicStats['perempuan'] }}"
+                                    readonly>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Luas Wilayah (km²)</label>
@@ -108,9 +107,6 @@
                             <div class="col-md-5">
                                 <label class="form-label">Jumlah</label>
                                 <input type="number" name="new_pekerjaan_value" class="form-control" placeholder="0">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-primary w-100">Simpan Semua</button>
                             </div>
                         </div>
                     </div>

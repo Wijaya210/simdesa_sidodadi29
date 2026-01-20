@@ -9,12 +9,16 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Warga\SuratPengajuanController;
 use App\Http\Controllers\Admins\SuratPengajuanController as AdminSuratPengajuanController;
+use App\Http\Controllers\Admins\BeritaController as AdminBeritaController;
+use App\Http\Controllers\Admins\ActivityLogController as AdminActivityLogController;
+use App\Http\Controllers\Users\BeritaController as UserBeritaController;
 
 // ========================
 // Beranda
 // ========================
 Route::get('/', [BerandaController::class, 'index'])->name('beranda');
 Route::get('/statistik', [\App\Http\Controllers\StatistikController::class, 'index'])->name('statistik.index');
+Route::get('/surat-validasi/{id}', [\App\Http\Controllers\ValidasiSuratController::class, 'index'])->name('surat.validasi');
 
 // ========================
 // LOGIN & LOGOUT ADMIN
@@ -54,6 +58,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/warga/dashboard', [UsersController::class, 'dashboard'])->name('users.dashboard');
     Route::get('/warga/profil', [UsersController::class, 'profile'])->name('users.profile');
     Route::post('/warga/profil/password', [UsersController::class, 'updatePassword'])->name('users.profile.password');
+    Route::get('/warga/profil/password-verify', [UsersController::class, 'showPasswordVerifyForm'])->name('users.profile.password.verify');
+    Route::post('/warga/profil/password-verify', [UsersController::class, 'verifyPasswordUpdate'])->name('users.profile.password.verify.process');
 });
 
 // ========================
@@ -78,6 +84,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/program-bantuan', [\App\Http\Controllers\Users\ProgramBantuanController::class, 'index'])->name('program-bantuan.index');
 
     // ========================
+    // BERITA - USER
+    // ========================
+    Route::get('/berita', [UserBeritaController::class, 'index'])->name('berita.index');
+    Route::get('/berita/{slug}', [UserBeritaController::class, 'show'])->name('berita.show');
+
+    // ========================
     // SURAT PENGAJUAN - ADMIN
     // ========================
     Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -93,6 +105,16 @@ Route::middleware('auth')->group(function () {
         // ========================
         Route::get('/pengaduan', [\App\Http\Controllers\Admins\PengaduanController::class, 'index'])->name('pengaduan.index');
         Route::put('/pengaduan/{id}', [\App\Http\Controllers\Admins\PengaduanController::class, 'update'])->name('pengaduan.update');
+
+        // ========================
+        // BERITA - ADMIN
+        // ========================
+        Route::resource('berita', AdminBeritaController::class);
+
+        // ========================
+        // ACTIVITY LOGS
+        // ========================
+        Route::get('logs', [AdminActivityLogController::class, 'index'])->name('logs.index');
 
         // ========================
         // PROGRAM BANTUAN - ADMIN

@@ -16,12 +16,8 @@
                         <p class="lead text-muted">Transparansi data kependudukan berdasarkan kategori.</p>
                         <div class="d-flex justify-content-center gap-3 mt-3">
                             <div class="badge bg-light text-dark shadow-sm p-3">
-                                <h5 class="mb-0 fw-bold">{{ $desa->statistik->jumlah_penduduk ?? 0 }}</h5>
+                                <h5 class="mb-0 fw-bold">{{ $dynamicStats['total_penduduk'] }}</h5>
                                 <small>Total Penduduk</small>
-                            </div>
-                            <div class="badge bg-light text-dark shadow-sm p-3">
-                                <h5 class="mb-0 fw-bold">{{ $desa->statistik->jumlah_keluarga ?? 0 }}</h5>
-                                <small>Total Keluarga</small>
                             </div>
                         </div>
                     </div>
@@ -65,7 +61,7 @@
                     data: {
                         labels: ['Laki-laki', 'Perempuan'],
                         datasets: [{
-                            data: [{{ $desa->statistik->jumlah_laki_laki }}, {{ $desa->statistik->jumlah_perempuan }}],
+                            data: [{{ $dynamicStats['laki_laki'] }}, {{ $dynamicStats['perempuan'] }}],
                             backgroundColor: ['#4e73df', '#f6c23e'],
                             hoverOffset: 4
                         }]

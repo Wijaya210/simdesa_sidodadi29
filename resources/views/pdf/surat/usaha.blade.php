@@ -147,10 +147,11 @@
         @if($qrCode)
             <div style="margin: 10px 0;">
                 <img src="data:image/svg+xml;base64,{{ $qrCode }}" width="80" alt="QR Code">
+
             </div>
         @endif
         <div class="name">
-            [Nama Kepala Desa]
+            {{ $desa->kepala_desa ?? '-' }}
         </div>
     </div>
 </body>

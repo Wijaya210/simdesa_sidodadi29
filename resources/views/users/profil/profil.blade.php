@@ -84,13 +84,7 @@
 
                             <form action="{{ route('users.profile.password') }}" method="POST">
                                 @csrf
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold small text-muted text-uppercase">Password Saat
-                                        Ini</label>
-                                    <input type="password" name="current_password" class="form-control" required>
-                                </div>
 
-                                <hr class="my-4 opacity-25">
 
                                 <div class="mb-3">
                                     <label class="form-label fw-bold small text-muted text-uppercase">Password Baru</label>

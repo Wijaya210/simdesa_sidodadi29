@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Keterangan Pindah</title>
+    <title>Surat Keterangan Tidak Mampu (SKTM)</title>
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
@@ -93,8 +93,8 @@
     </div>
 
     <div class="title">
-        SURAT KETERANGAN PINDAH (KELUAR)<br>
-        Nomor: {{ $pengajuan->id }}/SKP/{{ date('Y') }}
+        SURAT KETERANGAN TIDAK MAMPU (SKTM)<br>
+        Nomor: {{ $pengajuan->id }}/SKTM/{{ date('Y') }}
     </div>
 
     <div class="content">
@@ -114,22 +114,34 @@
             </tr>
         </table>
 
-        <p style="margin-top: 30px;">
-            Adalah benar penduduk Desa Sidodadi yang akan <strong>pindah</strong> ke alamat:
+        <p style="margin-top: 20px;">
+            Adalah benar warga Desa kami yang termasuk dalam keluarga <strong>TIDAK MAMPU / PRA SEJAHTERA</strong>.
         </p>
 
-        <table class="data-table">
-            <tr>
-                <td>Alamat Tujuan</td>
-                <td>:</td>
-                <td>{{ $detail['alamat_tujuan'] ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td>Provinsi Tujuan</td>
-                <td>:</td>
-                <td>{{ $detail['provinsi_tujuan'] ?? '-' }}</td>
-            </tr>
-        </table>
+        @if(isset($detail['nama_anak']) || isset($detail['asal_sekolah']))
+            <p>Surat keterangan ini dipergunakan untuk keperluan anak/tanggungan:</p>
+            <table class="data-table">
+                @if(isset($detail['nama_anak']))
+                    <tr>
+                        <td>Nama Anak</td>
+                        <td>:</td>
+                        <td>{{ $detail['nama_anak'] }}</td>
+                    </tr>
+                @endif
+                @if(isset($detail['asal_sekolah']))
+                    <tr>
+                        <td>Asal Sekolah</td>
+                        <td>:</td>
+                        <td>{{ $detail['asal_sekolah'] }}</td>
+                    </tr>
+                @endif
+            </table>
+        @endif
+
+        <p>
+            Surat keterangan ini dibuat untuk keperluan: <br>
+            <strong>"{{ $detail['keperluan'] ?? '-' }}"</strong>
+        </p>
 
         <p style="margin-top: 30px;">
             Demikian surat keterangan ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.
