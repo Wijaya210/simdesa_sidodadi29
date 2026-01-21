@@ -175,8 +175,14 @@ class SuratPengajuanController extends Controller
         $qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($qrUrl) . "&format=svg";
 
         try {
-            $qrCodeData = file_get_contents($qrApiUrl);
-            $qrCode = base64_encode($qrCodeData);
+            // Gunakan timeout agar tidak membuat proses hang jika API lambat
+            $ctx = stream_context_create(['http' => ['timeout' => 5]]); // 5 seconds timeout
+            $qrCodeData = @file_get_contents($qrApiUrl, false, $ctx);
+            if ($qrCodeData === false) {
+                $qrCode = null;
+            } else {
+                $qrCode = base64_encode($qrCodeData);
+            }
         } catch (\Exception $e) {
             $qrCode = null;
         }
