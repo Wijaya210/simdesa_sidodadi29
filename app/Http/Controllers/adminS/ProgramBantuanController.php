@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admins;
 use App\Http\Controllers\Controller;
 use App\Models\ProgramBantuan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+
 
 class ProgramBantuanController extends Controller
 {
@@ -23,15 +23,16 @@ class ProgramBantuanController extends Controller
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $gambarPath = null;
+        $imageName = null;
         if ($request->hasFile('gambar')) {
-            $gambarPath = $request->file('gambar')->store('program_bantuan', 'public');
+            $imageName = time() . '.' . $request->gambar->extension();
+            $request->gambar->move(public_path('images/program_bantuan'), $imageName);
         }
 
         ProgramBantuan::create([
             'nama_program' => $request->nama_program,
             'deskripsi' => $request->deskripsi,
-            'gambar' => $gambarPath,
+            'gambar' => $imageName,
         ]);
 
         return redirect()->back()->with('success', 'Program bantuan berhasil ditambahkan!');
@@ -48,10 +49,12 @@ class ProgramBantuanController extends Controller
         $program = ProgramBantuan::findOrFail($id);
 
         if ($request->hasFile('gambar')) {
-            if ($program->gambar) {
-                Storage::disk('public')->delete($program->gambar);
+            if ($program->gambar && file_exists(public_path('images/program_bantuan/' . $program->gambar))) {
+                unlink(public_path('images/program_bantuan/' . $program->gambar));
             }
-            $program->gambar = $request->file('gambar')->store('program_bantuan', 'public');
+            $imageName = time() . '.' . $request->gambar->extension();
+            $request->gambar->move(public_path('images/program_bantuan'), $imageName);
+            $program->gambar = $imageName;
         }
 
         $program->update([
@@ -66,8 +69,8 @@ class ProgramBantuanController extends Controller
     public function destroy($id)
     {
         $program = ProgramBantuan::findOrFail($id);
-        if ($program->gambar) {
-            Storage::disk('public')->delete($program->gambar);
+        if ($program->gambar && file_exists(public_path('images/program_bantuan/' . $program->gambar))) {
+            unlink(public_path('images/program_bantuan/' . $program->gambar));
         }
         $program->delete();
 

@@ -119,8 +119,7 @@ class SuratPengajuanController extends Controller
 
             \Illuminate\Support\Facades\DB::commit();
 
-            // Log activity
-            \App\Helpers\ActivityLogger::log('Create', 'Pengajuan surat baru: ' . $request->jenis_surat);
+
 
             return redirect()->route('surat-pengajuan.index')
                 ->with('success', 'Pengajuan berhasil dikirim! Data tersimpan di database.');

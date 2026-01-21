@@ -15,11 +15,28 @@ class StatistikController extends Controller
     public function index()
     {
         $desa = Desa::first();
+
+        // Jika data desa belum ada, buat data default agar tidak redirect error
         if (!$desa) {
-            return redirect()->back()->with('error', 'Data desa belum diinisialisasi.');
+            $desa = Desa::create([
+                'nama_desa' => 'Sidodadi',
+                'kepala_desa' => '-',
+                'alamat' => '-',
+                'kode_pos' => '-',
+            ]);
         }
 
-        $statistik = StatistikDesa::where('desa_id', $desa->id)->first();
+        $statistik = StatistikDesa::firstOrCreate(['desa_id' => $desa->id]);
+
+        // Pastikan daftar agama dasar ada
+        $defaultAgamas = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghucu'];
+        foreach ($defaultAgamas as $agamaNama) {
+            AgamaDesa::firstOrCreate([
+                'desa_id' => $desa->id,
+                'agama' => $agamaNama
+            ]);
+        }
+
         $agamas = AgamaDesa::where('desa_id', $desa->id)->get();
         $pekerjaans = PekerjaanDesa::where('desa_id', $desa->id)->get();
 
@@ -36,9 +53,7 @@ class StatistikController extends Controller
     public function update(Request $request)
     {
         $desa = Desa::first();
-        if (!$desa) {
-            return redirect()->back()->with('error', 'Data desa belum diinisialisasi.');
-        }
+
 
         $request->validate([
             'luas_wilayah' => 'required|numeric|min:0',

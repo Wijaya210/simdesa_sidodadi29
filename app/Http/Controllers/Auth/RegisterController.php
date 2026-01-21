@@ -27,19 +27,7 @@ class RegisterController extends Controller
             'nik' => 'required|digits:16',
             'email' => 'required|email|unique:users,email',
             'password' => ['required', 'confirmed', Password::min(8)],
-            'g-recaptcha-response' => 'required',
         ]);
-
-        // Verifikasi reCAPTCHA
-        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-            'secret' => env('RECAPTCHA_SECRET_KEY'),
-            'response' => $request->input('g-recaptcha-response'),
-            'remoteip' => $request->ip(),
-        ]);
-
-        if (!$response->json()['success']) {
-            return back()->withInput()->withErrors(['g-recaptcha-response' => 'Verifikasi reCAPTCHA gagal. Silakan coba lagi.']);
-        }
 
         // Cari data warga yang sudah didaftarkan oleh admin berdasarkan NIK
         $user = User::where('nik', $request->nik)

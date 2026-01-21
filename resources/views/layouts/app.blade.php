@@ -70,9 +70,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.berita.index') }}">Berita</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.logs.index') }}">Activity Log</a>
-                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.program-bantuan.index') }}">Bantuan</a>
                             </li>

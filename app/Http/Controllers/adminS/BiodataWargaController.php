@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use App\Helpers\ActivityLogger;
+
 
 class BiodataWargaController extends Controller
 {
@@ -76,7 +76,7 @@ class BiodataWargaController extends Controller
             'password' => Hash::make($request->password ?? $request->nik),
         ]);
 
-        ActivityLogger::log('Create Warga', 'Menambahkan data warga baru: ' . $request->name . ' (NIK: ' . $request->nik . ')');
+
 
         return redirect()->route('admin.biodata-warga.index')->with('success', 'Data warga berhasil ditambahkan!');
     }
@@ -134,7 +134,7 @@ class BiodataWargaController extends Controller
 
         $warga->update($data);
 
-        ActivityLogger::log('Update Warga', 'Memperbarui biodata warga: ' . $warga->name);
+
 
         return redirect()->route('admin.biodata-warga.index')->with('success', 'Data warga berhasil diperbarui!');
     }
@@ -153,7 +153,6 @@ class BiodataWargaController extends Controller
         $nama = $warga->name;
         $warga->delete();
 
-        ActivityLogger::log('Delete Warga', 'Menghapus data warga: ' . $nama);
 
         return redirect()->back()->with('success', 'Data warga berhasil dihapus!');
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Helpers\ActivityLogger;
+
 
 class PengaduanController extends Controller
 {
@@ -28,7 +28,7 @@ class PengaduanController extends Controller
             'is_read' => true,
         ]);
 
-        ActivityLogger::log('Update Status', 'Mengubah status pengaduan dari ' . $pengaduan->user->name . ' menjadi ' . $request->status);
+
 
         return redirect()->back()->with('success', 'Status pengaduan berhasil diperbarui!');
     }

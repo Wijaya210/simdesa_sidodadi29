@@ -10,7 +10,6 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Warga\SuratPengajuanController;
 use App\Http\Controllers\Admins\SuratPengajuanController as AdminSuratPengajuanController;
 use App\Http\Controllers\Admins\BeritaController as AdminBeritaController;
-use App\Http\Controllers\Admins\ActivityLogController as AdminActivityLogController;
 use App\Http\Controllers\Users\BeritaController as UserBeritaController;
 
 // ========================
@@ -110,11 +109,6 @@ Route::middleware('auth')->group(function () {
         // BERITA - ADMIN
         // ========================
         Route::resource('berita', AdminBeritaController::class);
-
-        // ========================
-        // ACTIVITY LOGS
-        // ========================
-        Route::get('logs', [AdminActivityLogController::class, 'index'])->name('logs.index');
 
         // ========================
         // PROGRAM BANTUAN - ADMIN

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Helpers\ActivityLogger;
+
 
 class BeritaController extends Controller
 {
@@ -39,7 +39,7 @@ class BeritaController extends Controller
             'tanggal' => $request->tanggal,
         ]);
 
-        ActivityLogger::log('Create', 'Menambahkan berita baru: ' . $request->judul);
+
 
         return redirect()->route('admin.berita.index')
             ->with('success', 'Berita berhasil ditambahkan.');
@@ -79,7 +79,7 @@ class BeritaController extends Controller
         $berita->tanggal = $request->tanggal;
         $berita->save();
 
-        ActivityLogger::log('Update', 'Memperbarui berita: ' . $berita->judul);
+
 
         return redirect()->route('admin.berita.index')
             ->with('success', 'Berita berhasil diperbarui.');
@@ -96,7 +96,6 @@ class BeritaController extends Controller
         $judul = $berita->judul;
         $berita->delete();
 
-        ActivityLogger::log('Delete', 'Menghapus berita: ' . $judul);
 
         return redirect()->route('admin.berita.index')
             ->with('success', 'Berita berhasil dihapus.');
